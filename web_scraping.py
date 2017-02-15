@@ -4,30 +4,65 @@ import re
 import datetime
 import random
 from math import  log
-#-------------scrapy descendants of a wiki page---------------#
 random.seed(datetime.datetime.now())
-pages=set()#收集全部的条目地址
-deep=1
-def getlink(url,deep,i=0):#i控制遍历深度
-    global pages 
-    if i < deep:
-        i=i+1
-        html = urlopen("http://en.wikipedia.org"+url)
-        s = BeautifulSoup(html)
-        try:
-            print(s.h1.get_text())
-            print(s.find(id="mw-content-text").findAll("p")[0])
-            print(s.find(id="ca-edit").find("span").find("a").attrs['href'])
-        except AttributeError:
-            print("This pages is missing something!")
-        for link in  s.find("div",{"id":"bodyContent"}).findAll("a",href=re.compile("^(/wiki/)((?!:).)*$")):
-            # if 'href' in link.attrs:
-            page=link.attrs['href'] 
-            if page not in pages:#排重，重复的不再进行子内容的查询
-                print('---------\n'+page)
-                pages.add(page)
-                getlink(page,deep,i)
 
-links = getlink("",deep)
-print(pages)
-print(len(pages))
+i=1
+
+def get_address(startpage):
+    return startpage.replace("http://","").split('/')[0]
+
+def get_internal(s,internal_url_piece):
+    links=[]
+    for link in s.findAll("a",href=re.compile("^(/|.*"+internal_url_piece+")")):
+        if link.attrs['href'] is not None:
+            if link.attrs['href'] not in links:
+                links.append(link.attrs['href'])
+    return  links
+
+def get_external(s,internal_url_piece):
+    links=[]
+    for link in s.findAll("a",href=re.compile("^(http|www)((?!pdf)(?!linkedin)(?!"+internal_url_piece+").)*((\.[a-z]+))$")):
+    #linkedin可能需要加uer-agent才行
+    #except .+字母 的文件
+        if link.attrs['href'] is not None:
+            if link.attrs['href'] not in links:
+                links.append(link.attrs['href'])
+    return  links
+
+def get_random_external(startpage):
+    internal_url_piece=get_address(startpage)
+    html=urlopen(startpage)
+    s=BeautifulSoup(html)
+    links=get_external(s,internal_url_piece)
+    if len(links)==0:
+        links=get_internal(s,internal_url_piece)
+        if len(links)==0:
+            print("nothing!no internal and no external")
+            return []
+        else:
+            new_internal_link=links[random.randint(0,len(links)-1)]
+            external_link=get_random_external(origin_url+new_internal_link)
+            print("i'm here")
+            return external_link
+    else:
+        return links[random.randint(0,len(links)-1)]
+    
+def followexternallonly(startpage):
+    global i
+    i=i+1
+    external_link=get_random_external(startpage)
+    if len(external_link)==0:
+        print('no way to find follow external')
+        return "sss"
+    else:
+        print("external_link:"+external_link)
+        while i<5 :
+            if followexternallonly(external_link)=="sss":
+            #如果no way to find follow external,则不再继续
+                break
+            else:
+                followexternallonly(external_link)
+
+origin_url="http://oreilly.com"
+followexternallonly(origin_url)
+
