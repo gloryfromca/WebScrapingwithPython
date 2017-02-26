@@ -1,9 +1,8 @@
-
-from twitter import Twitter,OAuth
-t=Twitter (auth=OAuth("2875649376-YWYc87J6iw7zd3KLqinfeyjtr0XpwDMOANR3VTh","sFepdYSVgg3MUhUV0W2WzKIGiTbbvDV7aSxslSvRbuHkR","xZV0qZNKdgrWQnZTw6KWbKEYm","9fQsWNwDBF3YROF8NljKPdHJnrt7gQUCxR0uy92q6efhRZjAQ0"))
-# pythontweets=t.search.tweets(q='#python')
-# print(pythontweets)
-# statusupdate=t.statuses.update(status='hello,world')
-# print(statusupdate)
-pythonstatuses=t.statuses.user_timeline(screen_name="montypython",count=5)
-print(pythonstatuses)
+#AIzaSyA_J5Ba4pA_A6pvYe-f2JzT4en-iiyTj18 google maps elevation API key
+import json
+from urllib.request import urlopen
+def getcountry(ipaddress):
+	response=urlopen("http://freegeoip.net/json/"+ipaddress).read().decode('utf-8')
+	responsejson=json.loads(response)
+	return responsejson.get("country_code")
+print(getcountry("45.78.33.186"))
