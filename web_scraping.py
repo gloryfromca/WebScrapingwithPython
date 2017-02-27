@@ -11,42 +11,41 @@ import datetime
 conn = pymysql.connect(host='127.0.0.1', 
 user='root', passwd='password', db='mysql', charset='utf8')
 cur = conn.cursor()
-cur.execute("USE scraping")
+cur.execute("USE wikipedia")
 
 random.seed(datetime.datetime.now())
 start_url="http://en.wikipedia.org"
 
 
-def get_links(url):# whole url input and whole url output 
+def insert_page_if_not_exists(url):
+    cur.execute("select * from pages where url= %s",(url))
+    if cur.rowcount==0:
+        cur.execute("INSERT INTO pages (url) VALUES (%s)", (url))
+        cur.connection.commit()
+        return cur.lastrowid
+    else:
+        return cur.fetchone()[0]
+
+
+def insert_to_links():
+    cur.execute()
+    
+links=set()#可以改写为从数据库中查询
+def get_links(url,recursionlevel):# whole url input and whole url output 
+
+    global links
+    pageid=insert_page_if_not_exists(url)
+
+    if  recursionlevel>5:
+        return ;
     html=urlopen(url)
     bs4=BeautifulSoup(html)
-    links=[]
+
     for link in  bs4.find("div",{"class":"mw-body-content"}).findAll("a",href=re.compile('^(/wiki/)((?!:).)*')):
-        link=link.attrs['href']
-        links.append(start_url+link)
-    return links
+        link=start_url+link.attrs['href']
+        insert_to_links(pageid,insert_page_if_not_exists(link))
+        links.add(link)
+        if link not in links:
+            get_links(link,recursionlevel+1)
 
-def store(title,content):
-    cur.execute('insert into pages(title,content) values(\"%s\",\"%s\")',(title,content))
-    cur.connection.commit()
-
-def store_title_content(url):
-    html=urlopen(url)
-    bs4=BeautifulSoup(html)
-    title=bs4.find("h1",{"class":"firstHeading"}).get_text()
-    #<h1 id="firstHeading" class="firstHeading" lang="en">Kevin Bacon</h1>
-    content=bs4.find("div", {"id":"mw-content-text"}).find("p").get_text()
-    store(title,content)
-
-
-links=get_links(start_url)
-try:
-    while len(links)>0:
-        link=links[random.randint(0,len(links)-1)]
-        store_title_content(link)
-        print('storing is OK!')
-        links=get_links(link)
-finally:
-    cur.close()
-    conn.close()
-
+get_links(start_url,0)
