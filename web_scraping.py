@@ -24,7 +24,9 @@ def readpdf(pdffile):
     return content
 
 pdffile=urlopen("http://pythonscraping.com/pages/warandpeace/chapter1.pdf")
+# pdffile=open("chapter1.pdf",'rb')#本地的文件
 output=readpdf(pdffile)
 print(output)#输出结果为str
 pdffile.close()
+
 
