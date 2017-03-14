@@ -10,10 +10,21 @@ from pdfminer.converter import TextConverter
 from pdfminer.pdfinterp import PDFResourceManager , process_pdf
 from pdfminer.layout import LAParams
 
+def readpdf(pdffile):
+    rsrcmgr=PDFResourceManager()
+    retstr=StringIO()
+    laparams=LAParams()
+    device=TextConverter(rsrcmgr,retstr,laparams=laparams)
 
-data = urlopen("http://pythonscraping.com/files/MontyPythonAlbums.csv").read().decode('ascii', 'ignore')
-datafile=StringIO(data)
-csvReader=csv.DictReader(datafile)
-for row in csvReader:
-    print(row)
+    process_pdf(rsrcmgr,device,pdffile)
+    device.close()
+
+    content=retstr.getvalue()
+    retstr.close()
+    return content
+
+pdffile=urlopen("http://pythonscraping.com/pages/warandpeace/chapter1.pdf")
+output=readpdf(pdffile)
+print(output)#输出结果为str
+pdffile.close()
 
