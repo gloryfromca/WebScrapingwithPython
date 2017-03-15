@@ -2,14 +2,24 @@ import pymysql
 from urllib.request import urlopen 
 from bs4 import BeautifulSoup
 import re
+import string
 
-def ngrams(content,n):
+def cleaninput(content):
     content=re.sub('\n+'," ",content)
+    content=re.sub('\[[0-9]*\]',"",content)
     content=re.sub(' +'," ",content)
     content=bytes(content,'utf-8')
     content=content.decode('ascii','ignore')
-
+    cleaninput=[]
     content=content.split(' ')
+    for item in content:
+        item=item.strip(string.punctuation)
+        if len(item)>1 or (item.lower=='a' or item.lower=='i'):
+            cleaninput.append(item)
+    return cleaninput
+
+def ngrams(content,n):
+    content=cleaninput(content)
     output=[]
     for i in range(len(content)+n-1):
         output.append(content[i:i+n])
@@ -22,5 +32,5 @@ n=2
 ngrams = ngrams(content, n)   
 print(ngrams)
 print(str(n)+'-grams count is '+str(len(ngrams)))
-
+print(string.punctuation)
 
