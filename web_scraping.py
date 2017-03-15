@@ -3,6 +3,7 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
 import string
+from collections import OrderedDict,Counter
 
 def cleaninput(content):
     content=re.sub('\n+'," ",content)
@@ -29,8 +30,21 @@ html=urlopen("http://en.wikipedia.org/wiki/Python_(programming_language)")#type:
 bs4=BeautifulSoup(html)
 content = bs4.find("div", {"id":"mw-content-text"}).get_text()
 n=2
-ngrams = ngrams(content, n)   
-print(ngrams)
+ngrams = ngrams(content, n)  
+
+def count_ngrams(ngrams): 
+    s=[]
+    for item in ngrams:
+        s.append(str(item).lower())
+    a=dict(Counter(s))#type:class 'collections.Counter' 
+    return a #type:dict
+
+#first#
+s=sorted(count_ngrams(ngrams).items(), key=lambda t: t[1], reverse=True)
+# print(s)#type:list
+print('-----------------------')
+#second#
+ngrams = OrderedDict(sorted(count_ngrams(ngrams).items(), key=lambda t: t[1], reverse=True))
+print(type(ngrams))#type:class 'collections.OrderedDict'
 print(str(n)+'-grams count is '+str(len(ngrams)))
-print(string.punctuation)
 
