@@ -29,11 +29,25 @@ textdict=textdict(text)
 def retrieve_most_word(currentword):
     return sorted(textdict[currentword].items(),key=lambda t:t[1],reverse=True)[0][0]
 
+
+def value_sum(currentword):
+    sum=0
+    for key,value in textdict[currentword].items():
+        sum+=value
+    return sum   
+def retrieve_random_word(currentword):
+    s=randint(1,value_sum(currentword))
+    for key,value in textdict[currentword].items():
+        s-=value
+        if s<=0:
+            return key
+
+
 chain=''
 length=100
 currentword='I'
 for i in range(0,length):
     chain=chain+currentword+' '
-    currentword=retrieve_most_word(currentword)
+    currentword=retrieve_random_word(currentword)
 print(chain)
 
