@@ -4,57 +4,36 @@ from bs4 import BeautifulSoup
 import re
 import string
 from collections import OrderedDict,Counter
+from  random import randint
 
-def cleaninput(content):
-    content=re.sub('\n+'," ",content).lower()
-    content=re.sub('\[[0-9]*\]',"",content)
-    content=re.sub(' +'," ",content)
-    content=bytes(content,'utf-8')
-    content=content.decode('ascii','ignore')
-    cleaninput=[]
-    content=content.split(' ')
-    for item in content:
-        item=item.strip(string.punctuation)
-        if len(item)>1 or (item.lower=='a' or item.lower=='i'):
-            if iscommon(item) is False:
-                cleaninput.append(item)
-    return cleaninput
-    
-def iscommon(ngram_item):
-    commonWords = ["the", "be", "and", "of", "a", "in", "to", "have", "it",
-"i", "that", "for", "you", "he", "with", "on", "do", "say", "this",
-"they", "is", "an", "at", "but","we", "his", "from", "that", "not",
-"by", "she", "or", "as", "what", "go", "their","can", "who", "get",
-"if", "would", "her", "all", "my", "make", "about", "know", "will",
-"as", "up", "one", "time", "has", "been", "there", "year", "so",
-"think", "when", "which", "them", "some", "me", "people", "take",
-"out", "into", "just", "see", "him", "your", "come", "could", "now",
-"than", "like", "other", "how", "then", "its", "our", "two", "more",
-"these", "want", "way", "look", "first", "also", "new", "because",
-"day", "more", "use", "no", "man", "find", "here", "thing", "give",
-"many", "well"]
-    if ngram_item in commonWords:
-        return True
-    return False
+def textdict(text):
+    text=text.replace("\n","")
+    text=text.replace("\"","")
+    punctuation=[';','.',':',',']
+    for symbol in punctuation:
+        text=text.replace(symbol," "+symbol+" ")
+    words=[word for word in text.split(' ') if word!='']
+    textdict={}
+    for i in range(1,len(words)): 
+        if words[i-1]  not in textdict:
+            textdict[words[i-1]]={}
+        if words[i] not in textdict[words[i-1]]:
+            textdict[words[i-1]][words[i]]=0
+        textdict[words[i-1]][words[i]]+=1
+    return textdict
 
 
-def ngrams(content,n):
-    content=cleaninput(content)
-    output={}
-    for i in range(len(content)+n-1):
-        ngram_item=" ".join(content[i:i+n])
-        if ngram_item not in output :
-            output[ngram_item] =0#initialize an unappeared string's count
-        output[ngram_item] +=1
-    return output
+text = str(urlopen("http://pythonscraping.com/files/inaugurationSpeech.txt").read(), 'utf-8')
+textdict=textdict(text)
 
+def retrieve_most_word(currentword):
+    return sorted(textdict[currentword].items(),key=lambda t:t[1],reverse=True)[0][0]
 
-content = str(urlopen("http://pythonscraping.com/files/inaugurationSpeech.txt").read(),'utf-8')
-n=2
-ngrams=ngrams(content, n)  
-sortedngrams = sorted(ngrams.items(), key=lambda t: t[1], reverse=True)
-#sortedNGrams = sorted(ngrams.items(), key = operator.itemgetter(1), reverse=True)#be analogous to previous line
-
-print(sortedngrams)
-print(str(n)+'-grams count is '+str(len(ngrams)))
+chain=''
+length=100
+currentword='I'
+for i in range(0,length):
+    chain=chain+currentword+' '
+    currentword=retrieve_most_word(currentword)
+print(chain)
 
