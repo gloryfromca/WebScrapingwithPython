@@ -6,48 +6,48 @@ import string
 from collections import OrderedDict,Counter
 from  random import randint
 
-def textdict(text):
-    text=text.replace("\n","")
-    text=text.replace("\"","")
-    punctuation=[';','.',':',',']
-    for symbol in punctuation:
-        text=text.replace(symbol," "+symbol+" ")
-    words=[word for word in text.split(' ') if word!='']
-    textdict={}
-    for i in range(1,len(words)): 
-        if words[i-1]  not in textdict:
-            textdict[words[i-1]]={}
-        if words[i] not in textdict[words[i-1]]:
-            textdict[words[i-1]][words[i]]=0
-        textdict[words[i-1]][words[i]]+=1
-    return textdict
+conn=pymysql.connect(host='127.0.0.1',user='root',passwd='password',charset='utf8')
+cur=conn.cursor()
+cur.execute('use wikipedia')
+
+class SolutionFound(RuntimeError):
+    def __init__(self, message):
+        self.message = message
+        
+def getlinks(currentid):
+    cur.execute('select topageid from links where frompageid=%s',(currentid))
+    if cur.rowcount==0:
+        return None
+    else:
+        return [x[0] for x in cur.fetchall()]
+def constructDict(currentid):
+    links_list=getlinks(currentid)
+    if links_list is None:
+        return {}
+    a=dict(zip(links_list,[{}]*len(links_list)))
+    return a
 
 
-text = str(urlopen("http://pythonscraping.com/files/inaugurationSpeech.txt").read(), 'utf-8')
-textdict=textdict(text)
-
-def retrieve_most_word(currentword):
-    return sorted(textdict[currentword].items(),key=lambda t:t[1],reverse=True)[0][0]
-
-
-def value_sum(currentword):
-    sum=0
-    for key,value in textdict[currentword].items():
-        sum+=value
-    return sum   
-def retrieve_random_word(currentword):
-    s=randint(1,value_sum(currentword))
-    for key,value in textdict[currentword].items():
-        s-=value
-        if s<=0:
-            return key
-
-
-chain=''
-length=100
-currentword='I'
-for i in range(0,length):
-    chain=chain+currentword+' '
-    currentword=retrieve_random_word(currentword)
-print(chain)
-
+def searchDepth(targetPageid,currentid,linkTree,depth):
+    if depth==0:
+        return linkTree
+    if not linkTree:
+        linkTree=constructDict(currentid)
+        if not linkTree:
+            return {}
+    if targetPageid in linkTree.keys():
+        print('target_id: '+str(targetPageid)+' FOUND!')
+        raise SolutionFound("process_id:"+str(currentid))
+    for key,value in linkTree.items():
+        try:
+            linkTree[key]=searchDepth(targetPageid,key,linkTree[key],depth-1)
+        except SolutionFound as e:
+            print(e.message)
+            raise SolutionFound("page:"+str(currentid))
+    return linkTree
+try:
+    s=searchDepth(156,2,{},4)
+    print('NO solution found')
+except SolutionFound as e:
+    print(' start_id: '+e.message.split(':')[1])
+#错误的层层抛出来<-->找到结果后search过程经过的id层层抛出
