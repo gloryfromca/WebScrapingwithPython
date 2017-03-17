@@ -1,5 +1,9 @@
 import requests
-params = {'email_addr': 'ryan.e.mitchell@gmail.com'}
-r = requests.post("http://post.oreilly.com/client/o/oreilly/forms/\
-quicksignup.cgi", data=params)
-print(r.text)
+params={'username': 'zhanghui', 'password': 'password'}
+r=requests.post("http://pythonscraping.com/pages/cookies/welcome.php", data=params)
+print('Cookie is set to:')
+print(r.cookies.get_dict())
+print('-------------')
+print('Now go to the profile page...')
+new_r=requests.get("http://pythonscraping.com/pages/cookies/profile.php",cookies=r.cookies)
+print(new_r.text)
