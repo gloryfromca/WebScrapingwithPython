@@ -1,15 +1,12 @@
 from selenium import webdriver
-driver = webdriver.PhantomJS(executable_path="C:/Users/Administrator/Downloads/phantomjs-2.1.1-windows/bin/phantomjs.exe")
-driver.get("http://pythonscraping.com")
-driver.implicitly_wait(1)
-print(driver.get_cookies())
-savedCookies = driver.get_cookies()
-driver.quit()
-driver2 = webdriver.PhantomJS(executable_path="C:/Users/Administrator/Downloads/phantomjs-2.1.1-windows/bin/phantomjs.exe")
-driver2.get("http://pythonscraping.com")
-driver2.delete_all_cookies()
-for cookie in savedCookies:
-    driver2.add_cookie(cookie)
-driver2.get("http://pythonscraping.com")
-driver.implicitly_wait(1) 
-print(driver2.get_cookies())
+
+driver = webdriver.PhantomJS(executable_path='C:/Users/Administrator/Downloads/phantomjs-2.1.1-windows/bin/phantomjs.exe')
+driver.get("http://pythonscraping.com/pages/itsatrap.html")
+links = driver.find_elements_by_tag_name("a")
+for link in links:
+    if not link.is_displayed():
+        print("The link "+link.get_attribute("href")+" is a trap")
+fields = driver.find_elements_by_tag_name("input")
+for field in fields:
+    if not field.is_displayed():
+        print("Do not change value of "+field.get_attribute("name"))
