@@ -1,5 +1,19 @@
-[INFO  - 2017-03-21T15:21:39.829Z] GhostDriver - Main - running on port 50900
-[INFO  - 2017-03-21T15:21:42.218Z] Session [1642e120-0e4a-11e7-90a7-09cce98d4320] - page.settings - {"XSSAuditingEnabled":false,"javascriptCanCloseWindows":true,"javascriptCanOpenWindows":true,"javascriptEnabled":true,"loadImages":true,"localToRemoteUrlAccessEnabled":false,"userAgent":"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1","webSecurityEnabled":true}
-[INFO  - 2017-03-21T15:21:42.219Z] Session [1642e120-0e4a-11e7-90a7-09cce98d4320] - page.customHeaders:  - {}
-[INFO  - 2017-03-21T15:21:42.219Z] Session [1642e120-0e4a-11e7-90a7-09cce98d4320] - Session.negotiatedCapabilities - {"browserName":"phantomjs","version":"2.1.1","driverName":"ghostdriver","driverVersion":"1.2.0","platform":"windows-7-32bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
-[INFO  - 2017-03-21T15:21:42.219Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: 1642e120-0e4a-11e7-90a7-09cce98d4320
+[INFO  - 2017-03-21T15:37:06.294Z] GhostDriver - Main - running on port 51514
+[INFO  - 2017-03-21T15:37:08.747Z] Session [3e83d520-0e4c-11e7-9d17-1da15d581e89] - page.settings - {"XSSAuditingEnabled":false,"javascriptCanCloseWindows":true,"javascriptCanOpenWindows":true,"javascriptEnabled":true,"loadImages":true,"localToRemoteUrlAccessEnabled":false,"userAgent":"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1","webSecurityEnabled":true}
+[INFO  - 2017-03-21T15:37:08.747Z] Session [3e83d520-0e4c-11e7-9d17-1da15d581e89] - page.customHeaders:  - {}
+[INFO  - 2017-03-21T15:37:08.747Z] Session [3e83d520-0e4c-11e7-9d17-1da15d581e89] - Session.negotiatedCapabilities - {"browserName":"phantomjs","version":"2.1.1","driverName":"ghostdriver","driverVersion":"1.2.0","platform":"windows-7-32bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
+[INFO  - 2017-03-21T15:37:08.748Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: 3e83d520-0e4c-11e7-9d17-1da15d581e89
+[ERROR - 2017-03-21T15:37:30.269Z] Session [3e83d520-0e4c-11e7-9d17-1da15d581e89] - page.onError - msg: ReferenceError: Can't find variable: jQuery
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-03-21T15:37:30.271Z] Session [3e83d520-0e4c-11e7-9d17-1da15d581e89] - page.onError - stack:
+  (anonymous function) (https://code.jquery.com/ui/1.11.1/jquery-ui.min.js:6)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-03-21T15:37:30.272Z] Session [3e83d520-0e4c-11e7-9d17-1da15d581e89] - page.onError - msg: ReferenceError: Can't find variable: $
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-03-21T15:37:30.273Z] Session [3e83d520-0e4c-11e7-9d17-1da15d581e89] - page.onError - stack:
+  global code (http://pythonscraping.com/pages/javascript/draggableDemo.html:6)
+
+  phantomjs://platform/console++.js:263 in error
